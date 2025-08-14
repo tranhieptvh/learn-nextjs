@@ -1,19 +1,30 @@
 import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
-import RevenueChart from '@/app/ui/dashboard/revenue-chart';
-import { RevenueChartSkeleton } from '@/app/ui/skeletons';
+import { CustomersTableSkeleton } from '@/app/ui/skeletons';
+import CustomersTable from '@/app/ui/customers/table';
+import Search from '@/app/ui/search';
 
-export default async function Page() {
+export default async function Page(props: {
+  searchParams?: Promise<{
+    query?: string;
+  }>;
+}) {
+  const searchParams = await props.searchParams;
+  const query = searchParams?.query || '';
+
   return (
-    <main>
-      <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-        Customers
-      </h1>
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-        <Suspense fallback={<RevenueChartSkeleton />}>
-          <RevenueChart />
+    <div className='w-full'>
+      <div className="flex w-full items-center justify-between">
+        <h1 className={`${lusitana.className} text-2xl`}>Customers</h1>
+      </div>
+      <div className="mt-4 md:mt-8">
+        <Search placeholder="Search customers..." />
+      </div>
+      <div className="mt-6 flow-root">
+        <Suspense fallback={<CustomersTableSkeleton />}>
+          <CustomersTable query={query} />
         </Suspense>
       </div>
-    </main>
+    </div>
   );
 } 
